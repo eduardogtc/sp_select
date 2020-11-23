@@ -26,7 +26,7 @@ Usage:
 */
 PRINT 'Altering procedure sp_select...'
 GO
-ALTER PROCEDURE dbo.sp_select(@table_name sysname, @spid int = NULL, @max_pages int = 1000)
+ALTER PROCEDURE [dbo].[sp_select](@table_name sysname, @spid int = NULL, @max_pages int = 1000, @destination_table sysname = NULL )
 AS
   SET NOCOUNT ON
   
@@ -46,7 +46,7 @@ AS
   
   SET @db_id = DB_ID(PARSENAME(@table_name, 3))
     
-  EXEC @status = sp_selectpages @object_id = @object_id, @db_id = @db_id, @max_pages = @max_pages
+  EXEC @status = sp_selectpages @object_id = @object_id, @db_id = @db_id, @max_pages = @max_pages, @destination_table = @destination_table
   
   RETURN (@status)
 GO
