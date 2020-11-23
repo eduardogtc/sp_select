@@ -26,7 +26,7 @@ EXEC dbo.sp_selectpages @object_id = @i, @db_id = @d,  @max_pages = 10000
 */
 PRINT 'Altering procedure sp_selectpages'
 GO
-ALTER PROCEDURE dbo.sp_selectpages(@object_id int, @db_id int = NULL,  @max_pages int = 100)
+ALTER PROCEDURE [dbo].[sp_selectpages](@object_id int, @db_id int = NULL,  @max_pages int = 100, @destination_table sysname = NULL)
 AS
 BEGIN
     SET NOCOUNT ON
@@ -147,6 +147,13 @@ BEGIN
                                                                                 ORDER BY ColumnID 
                                                                                      FOR XML PATH(N'')), 1, 1, N'') + N' )
                     ) AS pvt'
+
+	IF @destination_table IS NOT NULL 
+		BEGIN
+			 DECLARE @SQL_INSERT nvarchar(MAX) = N' INSERT INTO ' + @destination_table + ' ' + @SQL
+
+			 EXEC (@SQL_INSERT)
+		END 
 
     EXEC (@SQL)
     
